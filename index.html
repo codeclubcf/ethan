@@ -29,3 +29,79 @@
 <a href="mailto:mrcoolethan@gmail.com">Email mrcoolethan@gmail.com</a> 
 
 
+
+
+Transparency = 13 -- The bigger this is, the less effect the lighting has.
+Distance = 500 -- Change this to the distance you can see it from.
+Brick = script.Parent -- The effected brick.
+
+Rebound = true
+
+function Restore()
+	for P = 1, #Players do
+		Torso = Players[P].Character:FindFirstChild("Torso")
+
+		if (Torso ~= nil) then
+			Factor = ((Players[P].Character.Torso.Position - Brick.Position).magnitude)
+
+			if (Factor <= Distance) then
+				local Check = Special
+
+				if (Check == nil) then
+					Rebound = false
+
+					New = Instance.new("ScreenGui")
+					New.Parent = Players[P].PlayerGui
+					New.Name = ("Effects")
+
+					Special = Instance.new("Frame")
+					Special.Parent = New
+					Special.Name = ("Particle Effect")
+
+					Special.Size = UDim2.new(1.5, 0, 1.5, 0) -- Size of the frame(s).
+					Special.Position = UDim2.new(-.2, 0, -.2, 0) -- Position of the frame(s).
+
+					Special.BorderColor3 = Color3.new(178, 178, 178)
+					Special.BackgroundColor = Brick.BrickColor
+					Special.BackgroundTransparency = 0 / Distance * Factor * Transparency
+				end
+
+				if (Special ~= nil) then
+					Special.BackgroundTransparency = 1 / Distance * Factor * Transparency
+					Special.BackgroundColor = Brick.BrickColor
+				end
+			end
+
+			if (Rebound == true) then
+				if (Factor > Distance) then
+					local Check = New
+				
+					if (Check ~= nil) then
+						Check:Remove()
+
+						New = nil
+						Special = nil
+					end
+				end
+			end
+		end
+
+		Release = Players[P].PlayerGui:FindFirstChild("Effects")
+
+		if (Release == nil) then
+			Check = nil
+		end
+	end
+end
+
+while true do
+	wait()
+
+	Players = game.Players:GetChildren()
+
+	Restore()
+
+	Rebound = true
+end 
+
+
