@@ -1,11 +1,177 @@
- 
-		  var _gaq = _gaq || [];
-		  _gaq.push(['_setAccount', 'UA-86951-7']);
-		  _gaq.push(['_trackPageview']);
 
-		  (function() {
-		    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-		    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-		    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
-		  })();
+<script>
+    //<![CDATA[
+(function() {
+  var getAttrib, isPresent, vendorName, vendors;
+
+  vendors = [null, 'webkit', 'moz', 'ms', 'o'];
+
+  vendorName = function(name, vendor) {
+    if (vendor && vendor.length > 0) {
+      return vendor + name[0].toUpperCase() + name.substr(1);
+    } else {
+      return name;
+    }
+  };
+
+  getAttrib = function(obj, name) {
+    var prop, vendor, _i, _len;
+    if (obj != null) {
+      for (_i = 0, _len = vendors.length; _i < _len; _i++) {
+        vendor = vendors[_i];
+        prop = vendorName(name, vendor);
+        if (obj[prop] != null) {
+          return obj[prop];
+        }
+      }
+    }
+  };
+
+  isPresent = function(obj, name) {
+    return getAttrib(obj, name) != null;
+  };
+
+  window.mainFun = function() {
+    var canvas, data, data_string, ext, extname, flags, getFormat, getWebgl, gl, name, param, paramItem, request, webgl, _, _i, _len, _ref;
+    gl = null;
+    webgl = {
+      supported: false
+    };
+    data = {
+      webgl: webgl
+    };
+    canvas = document.getElementsByTagName('canvas')[0];
+    getWebgl = function(name) {
+      var error;
+      try {
+        gl = canvas.getContext(name);
+        if (gl != null) {
+          data.webgl.name = name;
+          return data.webgl.supported = true;
+        }
+      } catch (_error) {
+        error = _error;
+        return data.webgl.error = error;
+      }
+    };
+    if ((canvas != null) && (canvas.getContext != null)) {
+      getWebgl('webgl');
+      if (gl == null) {
+        getWebgl('experimental-webgl');
+      }
+      if (gl != null) {
+        webgl.extensions = {
+          supported: gl.getSupportedExtensions(),
+          capabilities: {}
+        };
+        webgl.params = {};
+        gl.enable(gl.SAMPLE_ALPHA_TO_COVERAGE);
+        gl.enable(gl.SAMPLE_COVERAGE);
+        for (name in gl) {
+          _ = gl[name];
+          if (name.match(/BITS|ALIASED|COMPRESSED|MAX|^SAMPLE(_BUF|_COVERAGE_|S)|VERSION$|VENDOR|RENDERER/) != null) {
+            param = gl.getParameter(gl[name]);
+            if (param instanceof Float32Array || param instanceof Int32Array) {
+              webgl.params[name] = (function() {
+                var _i, _len, _results;
+                _results = [];
+                for (_i = 0, _len = param.length; _i < _len; _i++) {
+                  paramItem = param[_i];
+                  _results.push(paramItem);
+                }
+                return _results;
+              })();
+            } else {
+              webgl.params[name] = param;
+            }
+          }
+        }
+        if (gl.getShaderPrecisionFormat != null) {
+          getFormat = function(stage, type) {
+            var format;
+            format = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_FLOAT);
+            return {
+              rangeMin: format.rangeMin,
+              rangeMax: format.rangeMax,
+              precision: format.precision
+            };
+          };
+          webgl.shaderPrecision = {
+            VERTEX_SHADER: {
+              LOW_FLOAT: getFormat(gl.VERTEX_SHADER, gl.LOW_FLOAT),
+              MEDIUM_FLOAT: getFormat(gl.VERTEX_SHADER, gl.MEDIUM_FLOAT),
+              HIGH_FLOAT: getFormat(gl.VERTEX_SHADER, gl.HIGH_FLOAT),
+              LOW_INT: getFormat(gl.VERTEX_SHADER, gl.LOW_INT),
+              MEDIUM_INT: getFormat(gl.VERTEX_SHADER, gl.MEDIUM_INT),
+              HIGH_INT: getFormat(gl.VERTEX_SHADER, gl.HIGH_INT)
+            },
+            FRAGMENT_SHADER: {
+              LOW_FLOAT: getFormat(gl.FRAGMENT_SHADER, gl.LOW_FLOAT),
+              MEDIUM_FLOAT: getFormat(gl.FRAGMENT_SHADER, gl.MEDIUM_FLOAT),
+              HIGH_FLOAT: getFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT),
+              LOW_INT: getFormat(gl.FRAGMENT_SHADER, gl.LOW_INT),
+              MEDIUM_INT: getFormat(gl.FRAGMENT_SHADER, gl.MEDIUM_INT),
+              HIGH_INT: getFormat(gl.FRAGMENT_SHADER, gl.HIGH_INT)
+            }
+          };
+        } else {
+          webgl.shaderPrecision = null;
+        }
+        _ref = webgl.extensions.supported;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          extname = _ref[_i];
+          if (extname.match('texture_filter_anisotropic')) {
+            ext = gl.getExtension(extname);
+            webgl.extensions.capabilities[extname] = {
+              MAX_TEXTURE_MAX_ANISOTROPY_EXT: gl.getParameter(ext.MAX_TEXTURE_MAX_ANISOTROPY_EXT)
+            };
+          } else if (extname.match('OES_standard_derivatives')) {
+            ext = gl.getExtension(extname);
+            webgl.extensions.capabilities[extname] = {
+              FRAGMENT_SHADER_DERIVATIVE_HINT_OES: gl.getParameter(ext.FRAGMENT_SHADER_DERIVATIVE_HINT_OES)
+            };
+          } else if (extname.match('WEBGL_draw_buffers')) {
+            ext = gl.getExtension(extname);
+            webgl.extensions.capabilities[extname] = {
+              MAX_COLOR_ATTACHMENTS_WEBGL: gl.getParameter(ext.MAX_COLOR_ATTACHMENTS_WEBGL),
+              MAX_DRAW_BUFFERS_WEBGL: gl.getParameter(ext.MAX_DRAW_BUFFERS_WEBGL)
+            };
+          } else if (extname.match('WEBGL_debug_renderer_info')) {
+            ext = gl.getExtension(extname);
+            if (ext != null) {
+              webgl.extensions.capabilities[extname] = {
+                UNMASKED_VENDOR_WEBGL: gl.getParameter(ext.UNMASKED_VENDOR_WEBGL),
+                UNMASKED_RENDERER_WEBGL: gl.getParameter(ext.UNMASKED_RENDERER_WEBGL)
+              };
+            }
+          }
+        }
+      }
+    }
+    data.requestAnimationFrame = isPresent(window, 'requestAnimationFrame');
+    flags = document.location.hash;
+    data.fullscreen = flags.match('fullscreen') != null;
+    data.pointerlock = flags.match('pointerlock') != null;
+    data.gamepads = flags.match('gamepads') != null;
+    data.webAudioData = isPresent(window, 'AudioContext');
+    data.websocket = isPresent(window, 'WebSocket');
+    data.webworker = isPresent(window, 'Worker');
+    data.webRTC = {
+      support: isPresent(window, 'RTCPeerConnection'),
+      data: isPresent(window, 'RTCDataChannelEvent')
+    };
+    data_string = JSON.stringify(data);
+    if (window.XMLHttpRequest) {
+      request = new XMLHttpRequest();
+    } else {
+      request = new ActiveXObject('Microsoft.XMLHTTP');
+    }
+    request.open('POST', '/collect/', true);
+    request.setRequestHeader('Content-Type', 'application/json');
+    return request.send(data_string);
+  };
+
+}).call(this);
+    //]]>
+</script> 
 		
