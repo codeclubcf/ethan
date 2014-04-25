@@ -1,177 +1,70 @@
+<!DOCTYPE html>
 
-<script>
-    //<![CDATA[
-(function() {
-  var getAttrib, isPresent, vendorName, vendors;
+<html>
+<head>
+	<link href="http://31.media.tumblr.com/avatar_02d0fcd26c42_128.png" rel="shortcut icon">
+	<style>
+        img{border:1px solid #;-webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px;}
+	</style>
 
-  vendors = [null, 'webkit', 'moz', 'ms', 'o'];
+	<title>Tadeo Kondrak</title>
+	<link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+	<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
+	<link href="http://getbootstrap.com/examples/cover/cover.css" rel="stylesheet">
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+	<script>
+        $(document).ready(function(){
+            $(".inner").fadeIn(10000);
+            $(".mastfoot").fadeIn(10000);
+            $('[data-toggle="tooltip"]').tooltip({'placement': 'bottom'});
+        });
+	</script>
+</head>
 
-  vendorName = function(name, vendor) {
-    if (vendor && vendor.length > 0) {
-      return vendor + name[0].toUpperCase() + name.substr(1);
-    } else {
-      return name;
-    }
-  };
+<body>
+	<div class="site-wrapper">
+		<div class="site-wrapper-inner">
+			<div class="cover-container">
+				<div class="masthead clearfix">
+					<div class="inner" style="display:none;">
+						<h3 class="masthead-brand">Tadeo Kondrak</h3>
+                        <!--
+						<ul class="nav masthead-nav">
+							<li class="active"><a href=
+							"http://tadeokondrak.com/">Home</a></li>
 
-  getAttrib = function(obj, name) {
-    var prop, vendor, _i, _len;
-    if (obj != null) {
-      for (_i = 0, _len = vendors.length; _i < _len; _i++) {
-        vendor = vendors[_i];
-        prop = vendorName(name, vendor);
-        if (obj[prop] != null) {
-          return obj[prop];
-        }
-      }
-    }
-  };
+							<li><a data-toggle="tooltip" href=
+							"mailto:tadeo@kondrak.tk" title=
+							"tadeo@kondrak.tk">Contact</a></li>
+						</ul>
+						-->
+					</div>
+				</div>
 
-  isPresent = function(obj, name) {
-    return getAttrib(obj, name) != null;
-  };
+				<div class="inner cover">
+					<h1 class="cover-heading"><img height="100px" src="http://31.media.tumblr.com/avatar_02d0fcd26c42_128.png"><br>
+					<br>
+					Hi, I'm Tadeo.</h1>
 
-  window.mainFun = function() {
-    var canvas, data, data_string, ext, extname, flags, getFormat, getWebgl, gl, name, param, paramItem, request, webgl, _, _i, _len, _ref;
-    gl = null;
-    webgl = {
-      supported: false
-    };
-    data = {
-      webgl: webgl
-    };
-    canvas = document.getElementsByTagName('canvas')[0];
-    getWebgl = function(name) {
-      var error;
-      try {
-        gl = canvas.getContext(name);
-        if (gl != null) {
-          data.webgl.name = name;
-          return data.webgl.supported = true;
-        }
-      } catch (_error) {
-        error = _error;
-        return data.webgl.error = error;
-      }
-    };
-    if ((canvas != null) && (canvas.getContext != null)) {
-      getWebgl('webgl');
-      if (gl == null) {
-        getWebgl('experimental-webgl');
-      }
-      if (gl != null) {
-        webgl.extensions = {
-          supported: gl.getSupportedExtensions(),
-          capabilities: {}
-        };
-        webgl.params = {};
-        gl.enable(gl.SAMPLE_ALPHA_TO_COVERAGE);
-        gl.enable(gl.SAMPLE_COVERAGE);
-        for (name in gl) {
-          _ = gl[name];
-          if (name.match(/BITS|ALIASED|COMPRESSED|MAX|^SAMPLE(_BUF|_COVERAGE_|S)|VERSION$|VENDOR|RENDERER/) != null) {
-            param = gl.getParameter(gl[name]);
-            if (param instanceof Float32Array || param instanceof Int32Array) {
-              webgl.params[name] = (function() {
-                var _i, _len, _results;
-                _results = [];
-                for (_i = 0, _len = param.length; _i < _len; _i++) {
-                  paramItem = param[_i];
-                  _results.push(paramItem);
-                }
-                return _results;
-              })();
-            } else {
-              webgl.params[name] = param;
-            }
-          }
-        }
-        if (gl.getShaderPrecisionFormat != null) {
-          getFormat = function(stage, type) {
-            var format;
-            format = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_FLOAT);
-            return {
-              rangeMin: format.rangeMin,
-              rangeMax: format.rangeMax,
-              precision: format.precision
-            };
-          };
-          webgl.shaderPrecision = {
-            VERTEX_SHADER: {
-              LOW_FLOAT: getFormat(gl.VERTEX_SHADER, gl.LOW_FLOAT),
-              MEDIUM_FLOAT: getFormat(gl.VERTEX_SHADER, gl.MEDIUM_FLOAT),
-              HIGH_FLOAT: getFormat(gl.VERTEX_SHADER, gl.HIGH_FLOAT),
-              LOW_INT: getFormat(gl.VERTEX_SHADER, gl.LOW_INT),
-              MEDIUM_INT: getFormat(gl.VERTEX_SHADER, gl.MEDIUM_INT),
-              HIGH_INT: getFormat(gl.VERTEX_SHADER, gl.HIGH_INT)
-            },
-            FRAGMENT_SHADER: {
-              LOW_FLOAT: getFormat(gl.FRAGMENT_SHADER, gl.LOW_FLOAT),
-              MEDIUM_FLOAT: getFormat(gl.FRAGMENT_SHADER, gl.MEDIUM_FLOAT),
-              HIGH_FLOAT: getFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT),
-              LOW_INT: getFormat(gl.FRAGMENT_SHADER, gl.LOW_INT),
-              MEDIUM_INT: getFormat(gl.FRAGMENT_SHADER, gl.MEDIUM_INT),
-              HIGH_INT: getFormat(gl.FRAGMENT_SHADER, gl.HIGH_INT)
-            }
-          };
-        } else {
-          webgl.shaderPrecision = null;
-        }
-        _ref = webgl.extensions.supported;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          extname = _ref[_i];
-          if (extname.match('texture_filter_anisotropic')) {
-            ext = gl.getExtension(extname);
-            webgl.extensions.capabilities[extname] = {
-              MAX_TEXTURE_MAX_ANISOTROPY_EXT: gl.getParameter(ext.MAX_TEXTURE_MAX_ANISOTROPY_EXT)
-            };
-          } else if (extname.match('OES_standard_derivatives')) {
-            ext = gl.getExtension(extname);
-            webgl.extensions.capabilities[extname] = {
-              FRAGMENT_SHADER_DERIVATIVE_HINT_OES: gl.getParameter(ext.FRAGMENT_SHADER_DERIVATIVE_HINT_OES)
-            };
-          } else if (extname.match('WEBGL_draw_buffers')) {
-            ext = gl.getExtension(extname);
-            webgl.extensions.capabilities[extname] = {
-              MAX_COLOR_ATTACHMENTS_WEBGL: gl.getParameter(ext.MAX_COLOR_ATTACHMENTS_WEBGL),
-              MAX_DRAW_BUFFERS_WEBGL: gl.getParameter(ext.MAX_DRAW_BUFFERS_WEBGL)
-            };
-          } else if (extname.match('WEBGL_debug_renderer_info')) {
-            ext = gl.getExtension(extname);
-            if (ext != null) {
-              webgl.extensions.capabilities[extname] = {
-                UNMASKED_VENDOR_WEBGL: gl.getParameter(ext.UNMASKED_VENDOR_WEBGL),
-                UNMASKED_RENDERER_WEBGL: gl.getParameter(ext.UNMASKED_RENDERER_WEBGL)
-              };
-            }
-          }
-        }
-      }
-    }
-    data.requestAnimationFrame = isPresent(window, 'requestAnimationFrame');
-    flags = document.location.hash;
-    data.fullscreen = flags.match('fullscreen') != null;
-    data.pointerlock = flags.match('pointerlock') != null;
-    data.gamepads = flags.match('gamepads') != null;
-    data.webAudioData = isPresent(window, 'AudioContext');
-    data.websocket = isPresent(window, 'WebSocket');
-    data.webworker = isPresent(window, 'Worker');
-    data.webRTC = {
-      support: isPresent(window, 'RTCPeerConnection'),
-      data: isPresent(window, 'RTCDataChannelEvent')
-    };
-    data_string = JSON.stringify(data);
-    if (window.XMLHttpRequest) {
-      request = new XMLHttpRequest();
-    } else {
-      request = new ActiveXObject('Microsoft.XMLHTTP');
-    }
-    request.open('POST', '/collect/', true);
-    request.setRequestHeader('Content-Type', 'application/json');
-    return request.send(data_string);
-  };
+					<p class="lead">A 12 year old developer.</p>
 
-}).call(this);
-    //]]>
-</script> 
-		
+
+					<h2>
+    					<a data-toggle="tooltip" href="http://twitter.com/TadeoKondrak" title="@TadeoKondrak on twitter"><i class="fa fa-twitter"></i></a>
+    					<a data-toggle="tooltip" href="mailto:tadeo@kondrak.tk" title="tadeo@kondrak.tk"><i class="fa fa-envelope"></i></a>
+    					<a data-toggle="tooltip" href="http://github.com/tadeokondrak" title="@TadeoKondrak on github"><i class="fa fa-github-alt"></i></a>
+    					<a data-toggle="tooltip" href="http://keybase.io/tk" title="PGP key (@tk on keybase.io)"><i class="fa fa-lock"></i></a>
+    					<a data-toggle="tooltip" href="http://tdeo.tk/UN5c" title="Paypal: tadeo@kondrak.tk"><i class="fa fa-dollar"></i></a>
+    					<a data-toggle="tooltip" href="http://tdeo.tk/UNbE" title="Bitcoin: 1CT2h96ESg2..."><i class="fa fa-bitcoin"></i></a>
+					</h2>
+				</div>
+
+				<div class="mastfoot" style="display:none;">
+					<p>© 2014 Tadeo Kondrak.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
